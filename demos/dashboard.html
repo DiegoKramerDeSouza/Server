@@ -1,0 +1,1128 @@
+﻿<!-- Demo version: 2018.10.14 -->
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Dashboard + Video Conferencing + Chat + File Sharing | RTCMultiConnection</title>
+  <meta name="description" content="WebRTC Dashboard including support for canvas drawing, canvas data syncing, video conferencing, screen sharing and video conferencing. Including chat and file sharing.">
+
+  <link rel="shortcut icon" href="/demos/logo.png">
+
+  <link href="/admin/css/bootstrap.min.css" rel="stylesheet">
+  <script src="/admin/js/jquery-3.3.1.slim.min.js"></script>
+  <script src="/admin/js/popper.min.js"></script>
+  <script src="/admin/js/bootstrap.min.js"></script>
+
+  <script src="/node_modules/webrtc-adapter/out/adapter.js"></script>
+  <script src="/dist/RTCMultiConnection.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/node_modules/fbr/FileBufferReader.js"></script>
+
+  <script src="/node_modules/canvas-designer/dev/webrtc-handler.js"></script>
+  <script src="/node_modules/canvas-designer/canvas-designer-widget.js"></script>
+
+<style type="text/css">
+html, body, section, ul, li, nav, a, h1, h2 {
+    padding: 0;
+    margin: 0;
+    outline: none;
+    text-shadow: none;
+    box-shadow: none;
+    border-radius: 0;
+    text-decoration: none;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 17px;
+    line-height: 1.5em;
+}
+
+header {
+  border-bottom: 1px solid #95d4e7;
+  height: 70px;
+}
+
+a {
+    color: #EC008C;
+}
+
+a:hover {
+    color: #671345;
+}
+
+.logo {
+    float: left;
+    margin-left: 20px;
+    display: block;
+    height: 55px;
+}
+
+.dashboard-span {
+    font-size: 24px;
+    display: inline-block;
+    margin-top: 15px;
+    margin-left: 9px;
+    font-weight: bold;
+    color: #0194ff;
+}
+
+section {
+  border-bottom: 1px solid #95d4e7;
+  padding: 5px 20px;
+}
+
+.table {
+  overflow: auto;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  border-left: 1px solid #eceeef;
+  border-bottom: 1px solid #eceeef;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-top: 1px solid #eceeef;
+  border-right: 1px solid #eceeef;
+}
+
+.table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #eceeef;
+}
+
+.table tbody + tbody {
+  border-top: 2px solid #eceeef;
+}
+
+.table .table {
+  background-color: #fff;
+}
+
+.table-sm th,
+.table-sm td {
+  padding: 0.3rem;
+}
+
+.table-bordered {
+  border: 1px solid #eceeef;
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #eceeef;
+}
+
+.table-bordered thead th,
+.table-bordered thead td {
+  border-bottom-width: 2px;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table-active,
+.table-active > th,
+.table-active > td {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table-hover .table-active:hover {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table-hover .table-active:hover > td,
+.table-hover .table-active:hover > th {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table-success,
+.table-success > th,
+.table-success > td {
+  background-color: #dff0d8;
+}
+
+.table-hover .table-success:hover {
+  background-color: #d0e9c6;
+}
+
+.table-hover .table-success:hover > td,
+.table-hover .table-success:hover > th {
+  background-color: #d0e9c6;
+}
+
+.table-info,
+.table-info > th,
+.table-info > td {
+  background-color: #d9edf7;
+}
+
+.table-hover .table-info:hover {
+  background-color: #c4e3f3;
+}
+
+.table-hover .table-info:hover > td,
+.table-hover .table-info:hover > th {
+  background-color: #c4e3f3;
+}
+
+.table-warning,
+.table-warning > th,
+.table-warning > td {
+  background-color: #fcf8e3;
+}
+
+.table-hover .table-warning:hover {
+  background-color: #faf2cc;
+}
+
+.table-hover .table-warning:hover > td,
+.table-hover .table-warning:hover > th {
+  background-color: #faf2cc;
+}
+
+.table-danger,
+.table-danger > th,
+.table-danger > td {
+  background-color: #f2dede;
+}
+
+.table-hover .table-danger:hover {
+  background-color: #ebcccc;
+}
+
+.table-hover .table-danger:hover > td,
+.table-hover .table-danger:hover > th {
+  background-color: #ebcccc;
+}
+
+.thead-inverse th {
+  color: #fff;
+  background-color: #292b2c;
+}
+
+.thead-default th {
+  color: #464a4c;
+  background-color: #eceeef;
+}
+
+.table-inverse {
+  color: #fff;
+  background-color: #292b2c;
+}
+
+.table-inverse th,
+.table-inverse td,
+.table-inverse thead th {
+  border-color: #fff;
+}
+
+.table-inverse.table-bordered {
+  border: 0;
+}
+
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
+.table-responsive.table-bordered {
+  border: 0;
+}
+
+.clickable {
+  border-bottom: 1px dotted blue;
+  padding-bottom: 2px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.tab {
+  display: inline-block;
+  width: 20px;
+}
+
+header div .top-span, header div button {
+  display: inline-block!important;
+  margin-right: 25px;
+  padding: 2px 8px;
+  font-size: 14px;
+}
+
+#logs-viewer {
+  height: 400px;
+  overflow: auto;
+  padding: 0;
+  border: 0;
+}
+
+#logs-viewer tr:first-child td {
+  border-top: 0;
+}
+
+pre {
+  margin: 0;
+  padding: 0;
+}
+
+input[disabled], button[disabled] {
+  background: transparent!important;
+  color: #dcd7d7!important;
+  border-color: #dcd7d7!important;
+  cursor: not-allowed!important;
+}
+
+.max-width {
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+</style>
+</head>
+<body>
+  <header style="margin-bottom: 20px;">
+    <img class="logo" src="/demos/logo.png" alt="RTCMultiConnection" /> <span class="dashboard-span">Dashboard Example</span>
+
+    <div style="float: right;margin-top: 15px;">
+      <button class="btn btn-primary" data-toggle="modal" data-target="#startRoomModel">Create A New Room</button>
+      <span class="top-span clickable" data-toggle="modal" data-target="#joinRoomModel">Join A Hidden Room</span>
+      <span class="top-span">Active rooms: <span id="active-rooms">0</span></span>
+    </div>
+  </header>
+
+  <div class="modal fade" id="startRoomModel" tabindex="-1" role="dialog" aria-labelledby="startRoomModelLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="startRoomModelLabel">Create A New Room</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <p>
+                <label for="txt-roomid" class="col-form-label">Enter Room ID:</label>
+                <input type="text" class="form-control" id="txt-roomid">
+              </p>
+
+              <p>
+                <label for="txt-user-name" class="col-form-label">Enter Your Name:</label>
+                <input type="text" class="form-control" id="txt-user-name">
+              </p>
+
+              <p>
+                <label class="col-form-label"><input type="checkbox" id="chk-hidden-room"> Hidden Room? (Hide from the list)</label>
+              </p>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="btn-create-room">Create</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="joinRoomModel" tabindex="-1" role="dialog" aria-labelledby="joinRoomModelLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="joinRoomModelLabel">Join A Hidden Room</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <p>
+                <label for="txt-roomid-hidden" class="col-form-label">Enter Room ID:</label>
+                <input type="text" class="form-control" id="txt-roomid-hidden">
+              </p>
+
+              <p>
+                <label for="txt-user-name-hidden" class="col-form-label">Enter Your Name:</label>
+                <input type="text" class="form-control" id="txt-user-name-hidden">
+              </p>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="btn-join-hidden-room">Join</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirm-box-topper" style="display:none;z-index:99999999;top:0;left:0;bottom:0;right:0;width:100%;height:100%;position:fixed;background:#000000ad;"></div>
+  <div id="alert-box" class="modal fade" style="display:none;z-index:999999999999999;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="alert-title">Alert</h5>
+                        <button type="button" class="close btn-alert-close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="alert-message" class="model-list"></div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <p id="alert-special"></p>
+                        <button class="btn btn-primary btn-alert-close">Close</button>
+                    </div>
+                </div>
+            </div>
+  </div>
+
+  <div id="confirm-box" class="modal fade" style="display:none;z-index:999999999999999;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirm-title">Please Confirm</h5>
+                        <button type="button" class="close btn-confirm-close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="confirm-message" class="modal-body"></div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-confirm-close" id="btn-confirm-close">Cancel</button>
+                        <button class="btn btn-primary" id="btn-confirm-action">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+  <section style="min-height: 400px;">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Room ID</th>
+          <th>Owner ID</th>
+          <th>Session</th>
+          <th>Extra</th>
+          <th>Participants</th>
+          <th>Join</th>
+        </tr>
+      </thead>
+      <tbody id="rooms-list"><tr><td colspan=9>No active room found for this demo.</td></tr></tbody>
+    </table>
+  </section>
+
+<style>
+.extra-controls {
+    position: absolute;
+    right: 21%;
+}
+
+#btn-comments {
+  color: red;
+  margin-top: 5px;
+  font-size: 24px;
+  text-shadow: 1px 1px white;
+}
+
+#other-videos {
+    margin-top: 5px;
+}
+
+#other-videos video {
+    width: 45%;
+    margin: 5px;
+    border: 1px solid black;
+    padding: 1px;
+    border-radius: 3px;
+}
+
+#txt-chat-message {
+    width: 100%;
+    resize: vertical;
+    margin: 5px;
+    margin-right: 0;
+    min-height: 30px;
+}
+
+#btn-chat-message {
+    margin: 5px;
+}
+
+#conversation-panel {
+    margin-bottom: 20px;
+    text-align: left;
+    max-height: 200px;
+    overflow: auto;
+    border-top: 1px solid #E5E5E5;
+    width: 106%;
+}
+
+#conversation-panel .message {
+    border-bottom: 1px solid #E5E5E5;
+    padding: 5px 10px;
+}
+
+#conversation-panel .message img, #conversation-panel .message video, #conversation-panel .message iframe {
+    max-width: 100%;
+}
+
+#main-video {
+    width: 100%;
+    margin-top: -9px;
+    border-bottom: 1px solid #121010;
+    display: none;
+    padding-bottom: 1px;
+}
+
+hr {
+    height: 1px;
+    border: 0;
+    background: #E5E5E5;
+}
+
+#btn-attach-file {
+    width: 25px;
+    vertical-align: middle;
+    cursor: pointer;
+    display: none;
+}
+
+.checkmark {
+    display:none;
+    width: 15px;
+    vertical-align: middle;
+}
+</style>
+
+<article style="display: none;">
+<div id="widget-container" style="position: fixed;bottom: 0;right: 0;left: 20%;height: 100%;border: 1px solid black; border-top:0; border-bottom: 0;"></div>
+
+<div style="width: 20%; height: 100%; position: absolute;left:0;">
+    <video id="main-video" controls playsinline autoplay></video>
+    <div id="other-videos"></div>
+    <hr>
+    <div style="padding: 5px 10px;">
+        <div id="onUserStatusChanged"></div>
+    </div>
+
+    <div style="margin-top: 20px;position: absolute;bottom: 0;background: white; padding-bottom: 20px; width: 94%">
+        <div id="conversation-panel"></div>
+        <textarea id="txt-chat-message" disabled></textarea>
+        <button class="btn btn-primary" id="btn-chat-message" disabled>Send</button>
+        <img id="btn-attach-file" src="https://webrtcweb.com/attach-file.png" title="Attach a File">
+    </div>
+</div>
+</article>
+<footer style="text-align: center;">Dashboard + Video Conferencing + Chat + File Sharing</footer>
+
+<script>
+console.log("**01 - INICIANDO");
+// this object is used to get uniquie rooms based on this demo
+// i.e. only those rooms that are created on this page
+var publicRoomIdentifier = 'dashboard';
+
+var connection = new RTCMultiConnection();
+
+connection.socketURL = '/';
+// connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+
+/// make this room public
+connection.publicRoomIdentifier = publicRoomIdentifier;
+connection.socketMessageEvent = publicRoomIdentifier;
+
+// keep room opened even if owner leaves
+connection.autoCloseEntireSession = false;
+
+connection.connectSocket(function(socket) {
+  looper();
+
+  socket.on('disconnect', function() {
+      location.reload();
+  });
+});
+
+function looper() {
+    if (!$('#rooms-list').length) return;
+    connection.socket.emit('get-public-rooms', publicRoomIdentifier, function(listOfRooms) {
+        updateListOfRooms(listOfRooms);
+console.log("**00 - get-public");
+        setTimeout(looper, 3000);
+    });
+}
+
+function updateListOfRooms(rooms) {
+
+    console.log(rooms);
+    $('#active-rooms').html(rooms.length);
+
+    $('#rooms-list').html('');
+
+    if (!rooms.length) {
+        $('#rooms-list').html('<tr><td colspan=9>No active room found for this demo.</td></tr>');
+        return;
+    }
+
+    rooms.forEach(function(room, idx) {
+        var tr = document.createElement('tr');
+        var html = '';
+        html += '<td>' + (idx + 1) + '</td>';
+        html += '<td><span class="max-width" title="' + room.sessionid + '">' + room.sessionid + '</span></td>';
+        html += '<td><span class="max-width" title="' + room.owner + '">' + room.owner + '</span></td>';
+
+        html += '<td>';
+        Object.keys(room.session || {}).forEach(function(key) {
+            html += '<pre><b>' + key + ':</b> ' + room.session[key] + '</pre>';
+        });
+        html += '</td>';
+
+        html += '<td><span class="max-width" title="' + JSON.stringify(room.extra || {}).replace(/"/g, '`') + '">' + JSON.stringify(room.extra || {}) + '</span></td>';
+
+        html += '<td>';
+        room.participants.forEach(function(pid) {
+            html += '<span class="userinfo"><span class="max-width" title="' + pid + '">' + pid + '</span></span><br>';
+        });
+        html += '</td>';
+
+        html += '<td><button class="btn join-room" data-roomid="' + room.sessionid + '">Join</button></td>';
+        $(tr).html(html);
+        $('#rooms-list').append(tr);
+
+        $(tr).find('.join-room').click(function() {
+            $(tr).find('.join-room').prop('disabled', true);
+
+            var roomid = $(this).attr('data-roomid');
+            connection.join(roomid, function(isRoomJoined, roomid, error) {
+                if (error) {
+                    $(tr).find('.join-room').prop('disabled', false);
+                    alertBox(error, 'Error');
+                } else {
+                    showArticle();
+                }
+            });
+        });
+    });
+}
+
+$('#btn-join-hidden-room').click(function() {
+	console.log("**02 - JOIN HIDDEN");
+    var roomid = $('#txt-roomid-hidden').val().toString();
+    if (!roomid || !roomid.replace(/ /g, '').length) {
+        alertBox('Please enter room-id.', 'Room ID Is Required');
+        return;
+    }
+
+    var fullName = $('#txt-user-name-hidden').val().toString();
+    if (!fullName || !fullName.replace(/ /g, '').length) {
+        alertBox('Please enter your name.', 'Your Name Is Required');
+        return;
+    }
+
+    connection.extra.userFullName = fullName;
+
+    var initialHTML = $('#btn-join-hidden-room').html();
+
+    $('#btn-join-hidden-room').html('Please wait...').prop('disabled', true);
+
+    connection.checkPresence(roomid, function(isRoomExist) {
+        if (isRoomExist === false) {
+            alertBox('No such room exist on this server. Room-id: ' + roomid, 'Room Not Found');
+            $('#btn-join-hidden-room').html(initialHTML).prop('disabled', false);
+            return;
+        }
+
+        connection.join(roomid, function(isRoomJoined, roomid, error) {
+            if (error) {
+                $('#btn-join-hidden-room').html(initialHTML).prop('disabled', false);
+                alertBox(error, 'Error');
+            } else {
+                $('#joinRoomModel').modal('hide');
+                showArticle();
+            }
+        });
+    })
+});
+
+function showArticle() {
+console.log("**04 - SHOW ARTICLE");
+    $('#rooms-list').parent().parent().remove();
+    $('header').remove();
+    $('article').show();
+
+    designer.appendTo(document.getElementById('widget-container'));
+
+    $('#startRoomModel').modal('hide');
+
+    if (connection.isInitiator === true) {
+        setTimeout(afterOpenOrRoom, 3000);
+    }
+}
+
+function alertBox(message, title, specialMessage, callback) {
+console.log("**05 - ALERTBOX");
+    callback = callback || function() {};
+
+    $('.btn-alert-close').unbind('click').bind('click', function(e) {
+        e.preventDefault();
+        $('#alert-box').modal('hide');
+        $('#confirm-box-topper').hide();
+
+        callback();
+    });
+
+    $('#alert-title').html(title || 'Alert');
+    $('#alert-special').html(specialMessage || '');
+    $('#alert-message').html(message);
+    $('#confirm-box-topper').show();
+
+    $('#alert-box').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+}
+
+function confirmBox(message, callback) {
+    $('#btn-confirm-action').html('Confirm').unbind('click').bind('click', function(e) {
+	console.log("**06 - CONFIRMBOX");
+        e.preventDefault();
+        $('#confirm-box').modal('hide');
+        $('#confirm-box-topper').hide();
+        callback(true);
+    });
+
+    $('#btn-confirm-close').html('Cancel');
+
+    $('.btn-confirm-close').unbind('click').bind('click', function(e) {
+        e.preventDefault();
+        $('#confirm-box').modal('hide');
+        $('#confirm-box-topper').hide();
+        callback(false);
+    });
+
+    $('#confirm-message').html(message);
+    $('#confirm-title').html('Please Confirm');
+    $('#confirm-box-topper').show();
+
+    $('#confirm-box').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+}
+
+$('#btn-create-room').click(function() {
+console.log("**07 - CREATE ROOM");
+    var roomid = $('#txt-roomid').val().toString();
+    if (!roomid || !roomid.replace(/ /g, '').length) {
+        alertBox('Please enter room-id.', 'Room ID Is Required');
+        return;
+    }
+
+    var fullName = $('#txt-user-name').val().toString();
+    if (!fullName || !fullName.replace(/ /g, '').length) {
+        alertBox('Please enter your name.', 'Your Name Is Required');
+        return;
+    }
+
+    connection.extra.userFullName = fullName;
+
+    var initialHTML = $('#btn-create-room').html();
+
+    $('#btn-create-room').html('Please wait...').prop('disabled', true);
+
+    connection.checkPresence(roomid, function(isRoomExist) {
+		console.log("**08 - CHECK PRESENCE");
+        if (isRoomExist === true) {
+            alertBox('This room-id is already taken and room is active. Please join instead.', 'Room ID In Use');
+            return;
+        }
+
+        if ($('#chk-hidden-room').prop('checked') === true) {
+            // either make it unique!
+            // connection.publicRoomIdentifier = connection.token() + connection.token();
+
+            // or set an empty value (recommended)
+            connection.publicRoomIdentifier = '';
+        }
+
+        connection.open(roomid, function(isRoomOpened, roomid, error) {
+			console.log("**09 - OPEN ROOM");
+            $('#btn-create-room').html(initialHTML).prop('disabled', false);
+            if (error) {
+                alertBox(error, 'Error');
+            } else {
+                showArticle();
+            }
+        })
+    });
+});
+
+// here goes canvas designer
+var designer = new CanvasDesigner();
+console.log("**10 - DESIGN");
+// you can place widget.html anywhere
+designer.widgetHtmlURL = '/node_modules/canvas-designer/widget.html';
+designer.widgetJsURL = '/node_modules/canvas-designer/widget.min.js'
+
+designer.addSyncListener(function(data) {
+    connection.send(data);
+});
+
+designer.setSelected('pencil');
+
+designer.setTools({
+    pencil: true,
+    text: true,
+    image: true,
+    pdf: true,
+    eraser: true,
+    line: true,
+    arrow: true,
+    dragSingle: true,
+    dragMultiple: true,
+    arc: true,
+    rectangle: true,
+    quadratic: false,
+    bezier: true,
+    marker: true,
+    zoom: false,
+    lineWidth: false,
+    colorsPicker: false,
+    extraOptions: false,
+    code: false,
+    undo: true
+});
+
+// here goes RTCMultiConnection
+console.log("**11 - CONNECTION RTC");
+connection.chunkSize = 16000;
+connection.enableFileSharing = true;
+
+connection.session = {
+    audio: true,
+    video: true,
+    data: true
+};
+connection.sdpConstraints.mandatory = {
+    OfferToReceiveAudio: true,
+    OfferToReceiveVideo: true
+};
+
+connection.onUserStatusChanged = function(event) {
+console.log("**12 - STATUS CHANGE");
+    var infoBar = document.getElementById('onUserStatusChanged');
+    var names = [];
+    connection.getAllParticipants().forEach(function(pid) {
+        names.push(getFullName(pid));
+    });
+
+    if (!names.length) {
+        names = ['Only You'];
+    } else {
+        names = [connection.extra.userFullName || 'You'].concat(names);
+    }
+
+    infoBar.innerHTML = '<b>Active users:</b> ' + names.join(', ');
+};
+
+connection.onopen = function(event) {
+console.log("**13 - ON OPEN");
+    connection.onUserStatusChanged(event);
+
+    if (designer.pointsLength <= 0) {
+        // make sure that remote user gets all drawings synced.
+        setTimeout(function() {
+            connection.send('plz-sync-points');
+        }, 1000);
+    }
+
+    document.getElementById('btn-chat-message').disabled = false;
+    document.getElementById('txt-chat-message').disabled = false;
+    document.getElementById('btn-attach-file').style.display = 'inline-block';
+};
+
+connection.onclose = connection.onerror = connection.onleave = function(event) {
+console.log("**14 - ON CLOSE");
+    connection.onUserStatusChanged(event);
+};
+
+connection.onmessage = function(event) {
+console.log("**15 - ON MESSAGE");
+    if (event.data.chatMessage) {
+        appendChatMessage(event);
+        return;
+    }
+
+    if (event.data.checkmark === 'received') {
+        var checkmarkElement = document.getElementById(event.data.checkmark_id);
+        if (checkmarkElement) {
+            checkmarkElement.style.display = 'inline';
+        }
+        return;
+    }
+
+    if (event.data === 'plz-sync-points') {
+        designer.sync();
+        return;
+    }
+
+    designer.syncData(event.data);
+};
+
+// extra code
+
+function afterOpenOrRoom() {
+console.log("**16 - AFTER OPEN");
+    // capture canvas-2d stream
+    // and share in realtime using RTCPeerConnection.addStream
+    // requires: dev/webrtc-handler.js
+    designer.captureStream(function(stream) {
+        stream.isScreen = true;
+        stream.streamid = stream.id;
+        stream.type = 'local';
+
+        /*
+        var video = document.createElement('video');
+        video.muted = true;
+        video.srcObject = stream;
+        video.play();
+        */
+
+        connection.attachStreams.push(stream);
+        connection.onstream({
+            stream: stream,
+            type: 'local',
+            streamid: stream.id,
+            // mediaElement: video
+        });
+    });
+}
+
+connection.onstream = function(event) {
+console.log("**17 - ON STREAM");
+    if (event.stream.isScreen) {
+        var video = document.getElementById('main-video');
+        video.setAttribute('data-streamid', event.streamid);
+        video.style.display = 'block';
+        video.srcObject = event.stream;
+    } else {
+        event.mediaElement.controls = false;
+
+        var otherVideos = document.querySelector('#other-videos');
+        otherVideos.appendChild(event.mediaElement);
+    }
+
+    connection.onUserStatusChanged(event);
+};
+
+connection.onstreamended = function(event) {
+console.log("**18 - ON STREAM END");
+    var video = document.querySelector('video[data-streamid="' + event.streamid + '"]');
+    if (!video) {
+        video = document.getElementById(event.streamid);
+        if (video) {
+            video.parentNode.removeChild(video);
+            return;
+        }
+    }
+    if (video) {
+        video.srcObject = null;
+        video.style.display = 'none';
+    }
+};
+
+var conversationPanel = document.getElementById('conversation-panel');
+
+function appendChatMessage(event, checkmark_id) {
+console.log("**19 - APPEND MESSAGE");
+    var div = document.createElement('div');
+
+    div.className = 'message';
+
+    if (event.data) {
+        div.innerHTML = '<b>' + (event.extra.userFullName || event.userid) + ':</b><br>' + event.data.chatMessage;
+
+        if (event.data.checkmark_id) {
+            connection.send({
+                checkmark: 'received',
+                checkmark_id: event.data.checkmark_id
+            });
+        }
+    } else {
+        div.innerHTML = '<b>You:</b> <img class="checkmark" id="' + checkmark_id + '" title="Received" src="https://webrtcweb.com/checkmark.png"><br>' + event;
+        div.style.background = '#cbffcb';
+    }
+
+    conversationPanel.appendChild(div);
+
+    conversationPanel.scrollTop = conversationPanel.clientHeight;
+    conversationPanel.scrollTop = conversationPanel.scrollHeight - conversationPanel.scrollTop;
+}
+document.getElementById('btn-chat-message').onclick = function() {
+console.log("**20 - CLICK BTN-CHAT");
+    var chatMessage = document.getElementById('txt-chat-message').value;
+    document.getElementById('txt-chat-message').value = '';
+
+    if (!chatMessage || !chatMessage.replace(/ /g, '').length) return;
+
+    var checkmark_id = connection.userid + connection.token();
+
+    appendChatMessage(chatMessage, checkmark_id);
+
+    connection.send({
+        chatMessage: chatMessage,
+        checkmark_id: checkmark_id
+    });
+};
+
+document.getElementById('txt-chat-message').onkeyup = function(e) {
+console.log("**21 - KEY UP TEXT-MESG");
+    var code = e.keyCode || e.which;
+    if (code == 13) {
+        document.getElementById('btn-chat-message').click(); // you can even call "onclick"
+    }
+};
+
+document.getElementById('btn-attach-file').onclick = function() {
+console.log("**22 - CLICK ATTACH FILE");
+    var file = new FileSelector();
+    file.selectSingleFile(function(file) {
+        connection.send(file);
+    });
+};
+
+function getFileHTML(file) {
+console.log("**23 - GET FILE");
+    var url = file.url || URL.createObjectURL(file);
+    var attachment = '<a href="' + url + '" target="_blank" download="' + file.name + '">Download: <b>' + file.name + '</b></a>';
+    if (file.name.match(/\.jpg|\.png|\.jpeg|\.gif/gi)) {
+        attachment += '<br><img crossOrigin="anonymous" src="' + url + '">';
+    } else if (file.name.match(/\.wav|\.mp3/gi)) {
+        attachment += '<br><audio src="' + url + '" controls></audio>';
+    } else if (file.name.match(/\.pdf|\.js|\.txt|\.sh/gi)) {
+        attachment += '<iframe class="inline-iframe" src="' + url + '"></iframe></a>';
+    }
+    return attachment;
+}
+
+function getFullName(userid) {
+console.log("**24 - GET FULL NAME");
+    var _userFullName = userid;
+    if (connection.peers[userid] && connection.peers[userid].extra.userFullName) {
+        _userFullName = connection.peers[userid].extra.userFullName;
+    }
+    return _userFullName;
+}
+
+connection.onFileEnd = function(file) {
+console.log("**25 - ON FILE END");
+    var html = getFileHTML(file);
+    var div = progressHelper[file.uuid].div;
+
+    if (file.userid === connection.userid) {
+        div.innerHTML = '<b>You:</b><br>' + html;
+        div.style.background = '#cbffcb';
+    } else {
+        div.innerHTML = '<b>' + getFullName(file.userid) + ':</b><br>' + html;
+    }
+};
+
+// to make sure file-saver dialog is not invoked.
+connection.autoSaveToDisk = false;
+
+var progressHelper = {};
+
+connection.onFileProgress = function(chunk, uuid) {
+console.log("**26 - ON FILE PROGRESS");
+    var helper = progressHelper[chunk.uuid];
+    helper.progress.value = chunk.currentPosition || chunk.maxChunks || helper.progress.max;
+    updateLabel(helper.progress, helper.label);
+};
+
+connection.onFileStart = function(file) {
+console.log("**27 - FILE START");
+    var div = document.createElement('div');
+    div.className = 'message';
+
+    if (file.userid === connection.userid) {
+        div.innerHTML = '<b>You:</b><br><label>0%</label> <progress></progress>';
+        div.style.background = '#cbffcb';
+    } else {
+        div.innerHTML = '<b>' + getFullName(file.userid) + ':</b><br><label>0%</label> <progress></progress>';
+    }
+
+    div.title = file.name;
+    conversationPanel.appendChild(div);
+    progressHelper[file.uuid] = {
+        div: div,
+        progress: div.querySelector('progress'),
+        label: div.querySelector('label')
+    };
+    progressHelper[file.uuid].progress.max = file.maxChunks;
+
+    conversationPanel.scrollTop = conversationPanel.clientHeight;
+    conversationPanel.scrollTop = conversationPanel.scrollHeight - conversationPanel.scrollTop;
+};
+
+function updateLabel(progress, label) {
+console.log("**28 - UPDATE LABEL");
+    if (progress.position == -1) return;
+    var position = +progress.position.toFixed(2).split('.')[1] || 100;
+    label.innerHTML = position + '%';
+}
+
+var txtRoomId = document.getElementById('txt-roomid');
+
+txtRoomId.onkeyup = txtRoomId.onblur = txtRoomId.oninput = txtRoomId.onpaste = function() {
+console.log("**29 - ON CHANGE TXT-ROOMID");
+    localStorage.setItem('canvas-designer-roomid', txtRoomId.value);
+};
+
+if (localStorage.getItem('canvas-designer-roomid')) {
+    txtRoomId.value = localStorage.getItem('canvas-designer-roomid');
+    $('#txt-roomid-hidden').val(txtRoomId.value);
+}
+
+var userFullName = document.getElementById('txt-user-name');
+
+userFullName.onkeyup = userFullName.onblur = userFullName.oninput = userFullName.onpaste = function() {
+console.log("**30 - ON CHANGE FULL-NAME");
+    localStorage.setItem('canvas-designer-user-full-name', userFullName.value);
+
+    connection.extra.userFullName = userFullName.value;
+
+    if (connection.getAllParticipants().length) {
+        connection.updateExtraData();
+    }
+};
+
+if (localStorage.getItem('canvas-designer-user-full-name')) {
+console.log("**31 - FULL-NAME TO FULL-NAME-HIDDEN");
+    userFullName.value = localStorage.getItem('canvas-designer-user-full-name');
+    $('#txt-user-name-hidden').val(userFullName.value);
+}
+
+if (userFullName.value.length && userFullName.value.replace(/ /g, '').length) {
+console.log("**32 - EXTRA = FULL-NAME");
+    connection.extra.userFullName = userFullName.value;
+}
+</script>
+</body>
+</html>
