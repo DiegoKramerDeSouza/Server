@@ -1,0 +1,91 @@
+{
+  "_from": "rtcmulticonnection-server@latest",
+  "_id": "rtcmulticonnection-server@1.0.6",
+  "_inBundle": false,
+  "_integrity": "sha512-HcV44Hm5KJRbdVmEhgt9UHigJeL/N5Z6kHOtaNfLk2FQFy843DPOEodjyPKnU8umg791xZ+LUIShhBA+ITWAeQ==",
+  "_location": "/rtcmulticonnection-server",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "rtcmulticonnection-server@latest",
+    "name": "rtcmulticonnection-server",
+    "escapedName": "rtcmulticonnection-server",
+    "rawSpec": "latest",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "/rtcmulticonnection"
+  ],
+  "_resolved": "https://registry.npmjs.org/rtcmulticonnection-server/-/rtcmulticonnection-server-1.0.6.tgz",
+  "_shasum": "b72b4cdb899a9dd1eb097a2fb1819694cf5aeb93",
+  "_spec": "rtcmulticonnection-server@latest",
+  "_where": "/usr/local/www/apache24/webtv_new/node_modules/rtcmulticonnection",
+  "analyze": false,
+  "author": {
+    "name": "Muaz Khan",
+    "email": "muazkh@gmail.com",
+    "url": "https://muazkhan.com/"
+  },
+  "bugs": {
+    "url": "https://github.com/muaz-khan/RTCMultiConnection-Server/issues",
+    "email": "muazkh@gmail.com"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "basic-auth": "latest",
+    "socket.io": "latest",
+    "tsscmp": "latest"
+  },
+  "deprecated": false,
+  "description": "RTCMultiConnection socket.io server",
+  "engines": {
+    "node": "latest"
+  },
+  "homepage": "https://rtcmulticonnection.herokuapp.com/demos/",
+  "keywords": [
+    "peer-to-peer",
+    "peer2peer",
+    "peer",
+    "webrtc",
+    "rtcmulticonnection",
+    "webrtc-library",
+    "library",
+    "javascript",
+    "chrome",
+    "firefox",
+    "opera",
+    "ie",
+    "internet-explorer",
+    "android",
+    "rtcweb",
+    "rtcmulticonnection.js",
+    "multirtc",
+    "webrtc-experiment",
+    "javascript-library",
+    "muaz",
+    "muaz-khan"
+  ],
+  "license": "MIT",
+  "main": "./server.js",
+  "name": "rtcmulticonnection-server",
+  "preferGlobal": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muaz-khan/RTCMultiConnection-Server.git"
+  },
+  "scripts": {
+    "start": "node run-server.js"
+  },
+  "version": "1.0.6",
+  "warnings": [
+    {
+      "code": "ENOTSUP",
+      "required": {
+        "node": "latest"
+      },
+      "pkgid": "rtcmulticonnection-server@1.0.6"
+    }
+  ]
+}
