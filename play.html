@@ -1,0 +1,42 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WebTv - Serviço de Mídia</title>
+
+<script src="js/hls.light.min.js"></script>
+
+<!-- Flowplayer -->
+<link rel="stylesheet" href="css/skin.css">
+<script src="js/flow/flowplayer.min.js"></script>
+<script src="js/flow/flowplayer.hlsjs.light.min.js"></script>
+
+<!-- VideoJS -->
+<link rel="stylesheet" href="css/video-js.css">
+<script src="js/videojs/video.js"></script>
+<script src="js/videojs/videojs-http-streaming.js"></script>
+
+<!-- Geral -->
+<script src="js/fetch.js"></script>
+<script src="js/promise.min.js"></script>
+<script src="js/fetch.stream.js"></script>
+
+<link rel="stylesheet" href="css/player.css">
+
+</head>
+<body>
+	<main align=center;>
+		<div id="video-player" class="fp-slim d-none"></div>
+		<video-js id="remoteVideo" class="vjs-default-skin"></video-js>
+	</main>
+	
+	<script src="js/playerController.js"></script>
+	<script>
+		let name = "<%= request.getParameter("name") %>";
+		let player = new PlayerController(name);
+		player.initFetch();
+	</script>
+</body>
+</html>

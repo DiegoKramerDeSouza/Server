@@ -1,0 +1,90 @@
+body{
+	overflow: hidden;
+}
+
+.d-none{
+	display: none						!important;
+}
+
+/* VideoJS */
+
+button.vjs-playing{
+	display:none;
+}
+
+#remoteVideo{
+	position:absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%    						!important;
+	min-height: 100%   					!important;
+	max-height: 100%   					!important;
+	overflow: hidden;
+}
+
+#click-to-start{
+	position:absolute					!important;
+	top: 50% 							!important;
+	left: 50% 							!important;
+	transform: translate(-50%, -50%)	!important;
+	z-index: 9999						!important;
+	display: none;
+}
+
+button.vjs-big-play-button{
+	position:absolute					!important;
+	top: 50% 							!important;
+	left: 50% 							!important;
+	transform: translate(-50%, -50%)	!important;
+	font-size: 2.5em					!important;
+	line-height: 3em					!important;
+	height: 3em							!important;
+	width: 4em							!important;
+	border: 3px solid rgb(100,100,100)	!important;
+	border-radius: 20px					!important;
+	background-color: rgba(20,20,20,0.8)!important;
+	-webkit-transition-duration: 0.4s 	!important;
+	transition-duration: 0.4s 			!important;
+}
+
+div.vjs-text-track-display{
+	
+	display: none;
+}
+button.vjs-big-play-button:hover{
+	box-shadow: 0px 0px 100px white 	!important;
+	border: 3px solid white				!important;
+}
+
+#iniciada{
+	color: fff;
+	font-size: 2em;
+}
+
+#playableButton{
+	padding: 10px;
+	font-size: 1em;
+	background-color: rgba(34, 155, 255, 1);
+	border-radius: 0.3em;
+}
+
+/* FlowPlayer */
+
+.flowplayer .fp-header,
+.flowplayer .fp-icon,
+.flowplayer .fp-controls {
+	display: none
+}
+
+.flowplayer .fp-embed,
+.flowplayer .fp-time,
+.flowplayer .fp-duration,
+.flowplayer .fp-remaining,
+.flowplayer .fp-timeline .is-paused,
+.flowplayer .fp-ui {
+	background-image: none;
+}
+
+.flowplayer .fp-help {
+	display: none;
+}
